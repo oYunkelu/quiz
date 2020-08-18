@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<!--<script src="jquery-2.1.3.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  
+<style>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+body {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-size: 24px;
+    background-color: white;
+
+}
+header {
+    background-color: skyblue;
+    border-top: 1px solid #444;
+    color: #fff;
+    text-align: center;
+}
+main {
+    position:relative;
+    background-color: white;
+    background-image: url(images/blue3.png),url(images/blue3.png);
+    background-repeat: repeat-y,repeat-y;
+    background-position: left,right;
+    /*background-color: darkseagreen;*/
+}
+/*footer {
+    margin-top: 260px;
+    background-color: darkblue;
+    border-bottom:1px solid #444;
+    text-align: center;
+    color: #fff;
+}*/
+h1 {
+    margin: 0;
+    font-size: 50px;
+}
+ 
+  
+div p {
+    position: relative;
+    font-size:200%;
+    margin-top: 70px;
+    margin-left: 40px;
+    text-align: center; 
+  }
+  
+  
+div img {
+    float: left;
+    margin-top: 20px;
+    margin-left: 60px;
+  }
+  
+  
+p {
+    position: relative;
+    font-size:200%;
+    /*display: table;  /* 定義 */
+    margin-top: 60px;
+    margin-left: 30px;
+    text-align: center;  
+    /*height:100px;*/
+}
+  
+
+p span {
+    font-size:100%;
+    text-align: center;
+    color: aliceblue;
+    
+ }  
+  
+ul {
+    padding: 0;
+    border-top: 1px solid #000000;
+    display: table;  /* 定義 */
+    table-layout: fixed;
+    width: 100%;
+}
+li {
+    list-style-type:none;
+    border: 1px solid #666;
+    background-color: #fff;
+    display: table-cell;  /* 定義 */
+    cursor: pointer;
+}
+li:hover {
+    background: #0066CC;
+    color:#fff;
+}
+  
+  
+ 
+label { 
+    /*display: inline-block;*/
+    margin: 35px;
+    /*padding: 10px;
+    /*background-color: aliceblue;*/
+  }
+label #toi1 {
+    padding: 30px;
+    background-color: #ff0099;
+}
+label #toi2 {
+    padding: 30px;
+    background-color: #ff6600;
+}
+label #toi3 {
+    padding: 30px;
+    background-color: #339900;
+}
+  
+input[type=radio] { 
+    display: none; 
+}
+  
+input[type=radio] + span::before {
+    position: relative;
+	left: -15px;
+	top:4px;
+    content: "☐";
+	font-family: "Ionicons";
+	color: #fff;
+	font-size:50px;
+  }
+input[type=radio]:checked + span::before{ 
+    position: relative;
+    padding: 1.5px;
+	left: -15px;
+	top:3px;
+	content: "✔";
+	font-family: "Ionicons";
+	color: #fff;
+	font-size:50px;
+  }
+
+  
+  
+
+/* 画面に〇、×を表示するための要素（デフォルト非表示、回答後に一時的に表示） */
+div.quiz_area_icon{
+    position: absolute;
+    top: 0px;
+    left: 350px;
+    font-size: 400px;
+    font-weight: 200;
+    text-align: center;
+    color: darkorange;  
+    /*background-color: orange;*/
+    
+}
+div.quiz_area_icon2{
+    position: absolute;
+    max-width: 80%;
+    max-height: 20%;
+    top: 0px;
+    left: 150px;
+    font-size: 120px;
+    font-weight: 200;
+    text-align: center;
+    color: darkorange; 
+} 
+   
+  
+  
+/*#answer {
+    border-radius: 12px;
+    font-size:150%;
+    background-color: palevioletred;
+    height: 80px;
+    color: #fff;
+}*/
+/*#answer1  {
+    position: absolute;
+    /*top: 0; left: 0; right: 0; bottom: 595px; /*bottom: 455px*/
+    /*margin: auto;
+    background-attachment: fixed;
+    background-position: center top;
+    width: 490px;
+    height: 360px;
+  
+    border-radius: 12px;
+    font-size:150%;
+    background-color: palevioletred;
+    color: #fff;
+}*/
+  
+  
+#next{
+    border-radius: 12px;
+    margin-top: 70px;
+    font-size:100%;
+    background-color: #099;
+    height: 50px;
+    color: #fff;
+}
+</style>
+
+  
+  
+<title>クイズ練習（複数）</title>
+<script>
+$(function(){
+  //ここから記述領域［START］
+  //以下に配列を記述してください。
+  //問題文[配列]
+   //let quizArea = $('.quiz_area'); //クイズを管理するDOMを指定
+  //let quiz_html = quizArea.html(); //もう一度　を押した時に元に戻すため初期HTMLを変数で保管
+  let quiz_fin_cnt=4;
+  let quiz_success_cnt=0;
+    
+  let qs = ["通るときに閉まって、通らないときに開いているのは何？",
+           "話すことが好きな道具は何？",
+           "世界の真ん中にいる虫は何？",
+           "「くちびる９つ」の文房具は何？"];
+
+  //選択肢[多重配列]
+  let toi =[["踏切 ","洗濯機 ","冷蔵庫 "],
+            ["スプーン ","シャベル ","しゃもじ "],
+            ["てんとう虫 ","カマキリ ","蚊 "],
+  　　　　　　["はさみ ","クリップ ","ホチキス "]];
+
+  //答え[配列]
+  let ans = [1,2,3,2];
+  
+  //問題番号を変数countで管理する
+  let count = 0;
+  
+  //1.最初の問題文＆回答選択肢＆回答値を設定
+  //2.ラジオボタンをクリックしたらイベント発生！(クリックイベント)
+    $("input:radio").on('change',function() {//$('[name=toi]')
+      $('label')
+      .filter(':has(input:radio:checked)').css("background-Color","#ffeff6")
+      .end().filter(':not(:has(input:radio:checked))').css("background-Color","");
+    });
+  
+  
+  
+        
+  $("input").on("click",function() {
+        if ($(this).val()==ans[count]) {
+          $(".quiz_area_icon").html("〇");
+          quiz_success_cnt++;
+        } else {
+          $(".quiz_area_icon").html("✕");
+        }
+   });
+  
+
+      $("#text").html("クイズ 第"+(count+1)+"問");
+      $("#quest").html(qs[count]);
+      $("#toi1").html(toi[count][0]);
+      $("#toi2").html(toi[count][1]);
+      $("#toi3").html(toi[count][2]);
+
+  
+  // 3.次へボタンを押されたときの処理を書こう
+    
+     $("#next").on("click",function() {
+       if(quiz_fin_cnt <= count+1){ 
+        $(".quiz_area_icon").html("");
+        $(".quiz_area_icon2").html((quiz_fin_cnt)+"問中"+(quiz_success_cnt-6)+"問"+"正解！");
+          
+        }else{
+       $(".quiz_area_icon").html(""); $("input").on("click",function() { 
+          if ($(this).val()==ans[count]) {
+            $(".quiz_area_icon").html("〇");
+            quiz_success_cnt=quiz_success_cnt+1;
+          } else {
+            $(".quiz_area_icon").html("✕");
+          }
+       });
+       }
+        count++;
+        $("#text").html("クイズ 第"+(count+1)+"問");
+        $("#quest").html(qs[count]);
+        $("#toi1").html(toi[count][0]);
+        $("#toi2").html(toi[count][1]);
+        $("#toi3").html(toi[count][2]);
+
+    //結果を表示
+    });
+});
+  //ここまでが記述領域［END］
+</script>
+</head>
+<body>
+<header>
+    <h1><span id="text"></span></h1>
+</header>
+<main>
+<div class="quiz_area">
+  <div style="position: relative; display:inline-block;">
+  <img id="hukidasi" src="images/hukidasigirl4.gif" alt="" width="980" height="500">
+    
+ 
+  <div style="position: absolute; padding-top: 65px; max-width:40%; max-height:50%; padding-left: 110px; text-align: left;">
+  <p id="quest">ここに問題が出題されます</p>
+  <div class="quiz_area_bg"></div><!-- 追加 画面に被せる黒背景 -->
+  <div class="quiz_area_icon"></div><!-- 追加 マルorバツを中央に表示させるエリア -->  
+  <div class="quiz_area_icon2"></div><!-- 追加 マルorバツを中央に表示させるエリア -->  
+  </div></div>
+  
+  </div>
+  <p>
+    <label><input type="radio" name="toi" value="1"><span id="toi1">選択肢１</span></label><!--<br>を入れると縦並びになる-->
+    <label><input type="radio" name="toi" value="2"><span id="toi2">選択肢２</span></label>
+    <label><input type="radio" name="toi" value="3"><span id="toi3">選択肢３</span></label>
+  </p>
+     
+  <p>
+    <button id="next">次の問題</button>
+  </p>
+  <div class="quiz_area_bg"></div><!-- 追加 画面に被せる黒背景 -->
+  
+  
+</main>
+<!--<footer id="answer">フッター</footer>-->
+</body>
+</html>
